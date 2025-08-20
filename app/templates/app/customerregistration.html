@@ -1,0 +1,100 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}Registration{% endblock title %}
+
+{% block main-content %}
+<main class="d-flex justify-content-center align-items-center flex-grow-1 py-5">
+    <div class="card border-0 shadow-lg simple-card" style="max-width: 420px; width: 100%;">
+        
+        
+
+        <!-- Header -->
+        <div class="card-header bg-white text-center border-0">
+            <h4 class="fw-bold mb-1 text-primary">Create Your Account</h4>
+            <p class="small text-muted mb-0">Join us and start your journey</p>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body p-4">
+            
+            <!-- Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show mb-3" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <!-- Registration Form -->
+            <form method="POST" novalidate>
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">{{ field.label }}</label>
+                        <div class="input-group">
+                            {% if field.name == "username" %}
+                                <span class="input-group-text bg-light text-primary"><i class="bi bi-person-fill"></i></span>
+                            {% elif field.name == "email" %}
+                                <span class="input-group-text bg-light text-primary"><i class="bi bi-envelope-fill"></i></span>
+                            {% elif field.name == "password1" or field.name == "password2" %}
+                                <span class="input-group-text bg-light text-primary"><i class="bi bi-lock-fill"></i></span>
+                            {% endif %}
+                            {{ field }}
+                        </div>
+                        {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ field.errors|striptags }}
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <!-- Register Button -->
+                <div class="d-grid mt-3">
+                    <button type="submit"
+                            class="btn btn-gradient fw-bold shadow-sm py-2">
+                        <i class="bi bi-person-plus-fill me-1"></i> Register
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer bg-light text-center py-3">
+            <small class="text-muted">
+                Already have an account? 
+                <a href="{% url 'login' %}" class="fw-semibold link-gradient">Login</a>
+            </small>
+        </div>
+    </div>
+</main>
+
+<!-- ================= EXTRA CSS ================= -->
+<style>
+.simple-card {
+  border-radius: 1rem;
+}
+
+/* Gradient Button */
+.btn-gradient {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  border: none;
+  color: #fff;
+  transition: 0.3s;
+}
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #2575fc, #6a11cb);
+  transform: translateY(-2px);
+}
+
+/* Gradient Text Link */
+.link-gradient {
+  background: linear-gradient(90deg, #ff6a00, #ee0979);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+</style>
+
+{% endblock main-content %}
