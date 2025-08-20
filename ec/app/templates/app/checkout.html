@@ -1,0 +1,147 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}checkout{% endblock title %}
+
+{% block main-content %}
+<div class="container py-5">
+
+  <!-- Flash Messages -->
+  {% if messages %}
+    {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm" role="alert">
+        <i class="bi bi-info-circle me-2"></i>{{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="row mt-4 g-4">
+    
+    <!-- Order Summary -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="card shadow-sm border-0 hover-card">
+        <div class="card-body">
+          <h4 class="mb-3 d-flex align-items-center">
+            <i class="bi bi-bag-check text-primary me-2"></i> Order Summary
+          </h4>
+          <hr>
+          {% for item in cart_items %}
+            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+              <div>
+                <h6 class="mb-1">{{ item.product.title }}</h6>
+                <small class="text-muted">Qty: {{ item.quantity }}</small>
+              </div>
+              <span class="fw-semibold text-success">
+                <i class="bi bi-currency-rupee"></i>{{ item.product.discounted_price }}
+              </span>
+            </div>
+          {% endfor %}
+
+          <div class="d-flex justify-content-between fw-bold mt-3">
+            <span>Total (incl. shipping)</span>
+            <span>₹{{ totalamount }}</span>
+          </div> 
+        </div>
+      </div>
+    </div>
+
+    <!-- Shipping Address -->
+    <div class="col-lg-6 col-md-6 col-sm-12">
+      <div class="card shadow-sm border-0 hover-card">
+        <div class="card-body">
+          <h4 class="mb-3 d-flex align-items-center">
+            <i class="bi bi-geo-alt text-danger me-2"></i> Shipping Address
+          </h4>
+          <hr>
+
+          <form method="post" id="myform">
+            {% csrf_token %}
+            {% for ad in add %}
+              <div class="card mb-3 border address-card">
+                <div class="card-body">
+                  <h6 class="mb-1"><i class="bi bi-person-circle me-2"></i>{{ ad.name }}</h6>
+                  <p class="mb-1 text-muted small"><i class="bi bi-telephone me-1"></i>{{ ad.mobile }}</p>
+                  <p class="mb-2"><i class="bi bi-house-door me-1"></i>{{ ad.locality }}, {{ ad.city }}, {{ ad.state }} - {{ ad.zipcode }}</p>
+                  
+                  <div class="form-check">
+                    <input class="form-check-input" type="radio" name="custid" id="custadd{{ forloop.counter }}" value="{{ ad.id }}">
+                    <label class="form-check-label" for="custadd{{ forloop.counter }}">
+                      Use this address
+                    </label>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+
+            <div class="mb-3">
+              <label class="form-label fw-bold"><i class="bi bi-cash-coin me-1"></i>Total Amount</label>
+              <input type="text" class="form-control" name="amount" value="{{ totalamount }}" readonly>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="button" id="rzp-button1" class="btn btn-success shadow-sm">
+                <i class="bi bi-credit-card me-2"></i> Pay Now
+              </button>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Extra CSS -->
+<style>
+  .hover-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+  .address-card {
+    transition: border-color 0.2s ease;
+  }
+  .address-card:hover {
+    border-color: #0d6efd;
+  }
+</style>
+
+
+{% endblock main-content %}
+
+ {% block payment-gateway %}
+ <script>
+var options = {
+    "key": "rzp_test_R6La9y2xpkqPEB", // Enter the Key ID generated from the Dashboard
+    "amount": "{{razoramount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "K&K products",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": "{{order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        console.log("success")
+        var form = document.getElementById("myform");
+        //alert(response.razorpay_payment_id);
+        //alert(response.razorpay_order_id);
+        //alert(response.razorpay_signature)
+      window.location.href = `http://localhost:8000/paymentdone?order_id=${response.razorpay_order_id}&payment_id=${response.razorpay_payment_id}&cust_id=${form.elements["custid"].value}`
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+rzp1.on('payment.failed', function (response){
+        alert(response.error.description);
+});
+document.getElementById('rzp-button1').onclick = function(e){
+    console.log("button click")
+    rzp1.open();
+    e.preventDefault();
+}
+ </script>
+ {% endblock payment-gateway %}
