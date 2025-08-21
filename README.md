@@ -6,27 +6,18 @@ The project comes with user authentication, product browsing by categories, cart
 🚀 Features
 
 🔐 User Authentication – Register, Login, Logout, and Profile Management
-
 🛍 Product Management – Browse products by categories
-
 🛒 Shopping Cart – Add, update, and remove items with ease
-
 ❤️ Wishlist – Save products for later
-
 🏠 Address Management – Add and manage multiple delivery addresses
-
 💳 Razorpay Payment Gateway – Secure online payments
-
 📦 Order Management – Smooth checkout and order tracking
 
 🛠️ Tech Stack
 
 Backend: Django (Python)
-
 Frontend: HTML, CSS, JavaScript, Bootstrap
-
 Database: SQLite (default) → can be switched to PostgreSQL/MySQL
-
 Payment Gateway: Razorpay
 
 ⚙️ Installation & Setup
@@ -69,14 +60,12 @@ pip install Pillow
 
 
 If you already have a requirements.txt file, simply run:
-
 pip install -r requirements.txt
 
 4️⃣ Setup the Database
 
 Run migrations:
-
-python manage.py migrate
+* python manage.py migrate
 
 5️⃣ Create a Superuser (Admin Access)
 python manage.py createsuperuser
