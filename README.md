@@ -25,7 +25,7 @@ Payment Gateway: Razorpay
 Follow the steps below to set up the project on your local machine.
 
 1️⃣ Clone the Repository
-git clone https://github.com/your-username/django-ecommerce-project.git
+git clone https://github.com/K-s-c49/django-ecommerce-project.git
 cd django-ecommerce-project
 
 2️⃣ Create a Virtual Environment
