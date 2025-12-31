@@ -1,0 +1,68 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}About{% endblock title %}
+
+{% block main-content %}
+<div class="container py-5">
+
+  <!-- Heading -->
+  <div class="text-center mb-5">
+    <i class="bi bi-chat-dots-fill fs-1 text-primary mb-3"></i>
+    <h1 class="fw-bold text-primary">Contact Us</h1>
+    <p class="text-muted">We’d love to hear from you! Send us a message or reach out directly.</p>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- Contact Form -->
+    <div class="col-lg-7">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body p-4">
+          <h4 class="fw-semibold text-secondary mb-3">
+            <i class="bi bi-envelope-paper-heart me-2 text-danger"></i> Send a Message
+          </h4>
+          <form>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Your Name">
+            </div>
+            <div class="mb-3">
+              <input type="email" class="form-control" placeholder="Your Email">
+            </div>
+            <div class="mb-3">
+              <textarea rows="4" class="form-control" placeholder="Write your message"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">
+              <i class="bi bi-send-fill me-2"></i> Send Message
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Info -->
+    <div class="col-lg-5">
+      <div class="p-4 bg-white rounded shadow-sm h-100">
+        <h4 class="fw-semibold text-secondary mb-3">
+          <i class="bi bi-info-circle-fill text-primary me-2"></i> Get in Touch
+        </h4>
+        
+        <p class="mb-3"><i class="bi bi-geo-alt-fill text-danger me-2"></i> Radheshyan Society, Near Shani-Mandir, Surat (Guj)</p>
+        <p class="mb-3"><i class="bi bi-telephone-fill text-success me-2"></i> +91 8733929748</p>
+        <p class="mb-3"><i class="bi bi-envelope-fill text-primary me-2"></i> khushalsinghchundawat144@gmail.com</p>
+        <p class="mb-3"><i class="bi bi-clock-fill text-warning me-2"></i> Mon - Fri: 9:00 AM - 6:00 PM</p>
+
+        <hr>
+        <h6 class="fw-bold">Follow Us</h6>
+        <div class="d-flex gap-3 mt-2">
+          <a href="#" class="text-primary fs-4"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="text-info fs-4"><i class="bi bi-twitter"></i></a>
+          <a href="#" class="text-danger fs-4"><i class="bi bi-instagram"></i></a>
+          <a href="#" class="text-dark fs-4"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+{% endblock main-content %}

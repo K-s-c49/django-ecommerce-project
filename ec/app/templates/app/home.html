@@ -1,0 +1,221 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}Home{% endblock title %}
+{% block banner_slider %}
+<!-- ================= SMALL HEIGHT BANNER SLIDER ================= -->
+<div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000">
+  
+  <!-- Indicators -->
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="1"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="2"></button>
+    <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="3"></button>
+  </div>
+
+  <!-- Slides -->
+  <div class="carousel-inner">
+
+    <div class="carousel-item active">
+      <img src="{% static 'app/image/banner/b1.jpg' %}" class="d-block w-100 banner-img" alt="Banner 1">
+      <div class="carousel-caption d-none d-md-block">
+        <h2 class="fw-bold text-shadow">Latest Collections</h2>
+        <p class="lead">Shop trending products at unbeatable prices</p>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <img src="{% static 'app/image/banner/b2.jpg' %}" class="d-block w-100 banner-img" alt="Banner 2">
+      <div class="carousel-caption d-none d-md-block">
+        <h2 class="fw-bold text-shadow">Premium Gadgets</h2>
+        <p class="lead">High quality electronics just for you</p>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <img src="{% static 'app/image/banner/b3.jpg' %}" class="d-block w-100 banner-img" alt="Banner 3">
+      <div class="carousel-caption d-none d-md-block">
+        <h2 class="fw-bold text-shadow">Stylish Fashion</h2>
+        <p class="lead">Discover apparel that makes you stand out</p>
+      </div>
+    </div>
+
+    <div class="carousel-item">
+      <img src="{% static 'app/image/banner/b4.jpg' %}" class="d-block w-100 banner-img" alt="Banner 4">
+      <div class="carousel-caption d-none d-md-block">
+        <h2 class="fw-bold text-shadow">Best Deals</h2>
+        <p class="lead">Enjoy discounts & offers daily</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Controls -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+
+</div>
+{% endblock banner_slider %}
+ 
+{% block information %}
+<!-- ================= PRODUCT INFORMATION SECTION ================= -->
+<div class="container my-5">
+  <h2 class="text-center fw-bold mb-4 gradient-text">Why Choose Our Products?</h2>
+  <p class="text-center text-muted mb-5">
+    We take pride in offering products that combine quality, style, and value. Here’s why our customers love shopping with us.
+  </p>
+
+  <div class="row g-4">
+    <!-- Feature -->
+    <div class="col-md-4 col-sm-6">
+      <div class="p-4 shadow-lg rounded-3 bg-light h-100 hover-card border-top border-4 border-primary">
+        <h5 class="fw-bold mb-2 text-primary"><i class="bi bi-award-fill me-2"></i> Premium Quality</h5>
+        <p class="text-muted">Crafted with the finest materials for long-lasting satisfaction.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="p-4 shadow-lg rounded-3 bg-light h-100 hover-card border-top border-4 border-success">
+        <h5 class="fw-bold mb-2 text-success"><i class="bi bi-cash-stack me-2"></i> Affordable Prices</h5>
+        <p class="text-muted">Get maximum value for your money without compromise.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="p-4 shadow-lg rounded-3 bg-light h-100 hover-card border-top border-4 border-warning">
+        <h5 class="fw-bold mb-2 text-warning"><i class="bi bi-grid-fill me-2"></i> Wide Variety</h5>
+        <p class="text-muted">Clothing, gadgets, accessories — all in one place.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="p-4 shadow-lg rounded-3 bg-light h-100 hover-card border-top border-4 border-danger">
+        <h5 class="fw-bold mb-2 text-danger"><i class="bi bi-truck me-2"></i> Fast Shipping</h5>
+        <p class="text-muted">Trusted partners ensure your orders arrive quickly.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="p-4 shadow-lg rounded-3 bg-light h-100 hover-card border-top border-4 border-info">
+        <h5 class="fw-bold mb-2 text-info"><i class="bi bi-shield-lock-fill me-2"></i> Secure Payments</h5>
+        <p class="text-muted">Encrypted transactions for total peace of mind.</p>
+      </div>
+    </div>
+
+    <div class="col-md-4 col-sm-6">
+      <div class="p-4 shadow-lg rounded-3 bg-light h-100 hover-card border-top border-4 border-secondary">
+        <h5 class="fw-bold mb-2 text-secondary"><i class="bi bi-headset me-2"></i> Customer Support</h5>
+        <p class="text-muted">Friendly team available to assist you anytime.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock information %}
+
+
+{% block main-content %}
+<!-- ================= PRODUCT SCROLLER ================= -->
+<div class="container py-5">
+  <h3 class="fw-bold text-center mb-4 gradient-text">Featured Categories</h3>
+  <div class="d-flex flex-nowrap overflow-auto gap-3 pb-3">
+
+    <!-- Product Card -->
+    <a href="{% url 'category' 'PH' %}" class="text-decoration-none">
+      <div class="card product-card border-0 shadow-lg rounded-4">
+        <img src="{% static 'app/image/product/iphone.jpg' %}" class="card-img-top rounded-top-4" alt="Iphone">
+        <div class="card-body text-center">
+          <p class="fw-semibold">iPhone</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'category' 'PH' %}" class="text-decoration-none">
+      <div class="card product-card border-0 shadow-lg rounded-4">
+        <img src="{% static 'app/image/product/iphone2.jpg' %}" class="card-img-top rounded-top-4" alt="Iphone 2">
+        <div class="card-body text-center">
+          <p class="fw-semibold">iPhone</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'category' 'GT' %}" class="text-decoration-none">
+      <div class="card product-card border-0 shadow-lg rounded-4">
+        <img src="{% static 'app/image/product/goggles.jpg' %}" class="card-img-top rounded-top-4" alt="Goggles">
+        <div class="card-body text-center">
+          <p class="fw-semibold">Goggles</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'category' 'CR' %}" class="text-decoration-none">
+      <div class="card product-card border-0 shadow-lg rounded-4">
+        <img src="{% static 'app/image/product/camara.jpg' %}" class="card-img-top rounded-top-4" alt="Camera">
+        <div class="card-body text-center">
+          <p class="fw-semibold">Camera</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'category' 'SH' %}" class="text-decoration-none">
+      <div class="card product-card border-0 shadow-lg rounded-4">
+        <img src="{% static 'app/image/product/show.jpg' %}" class="card-img-top rounded-top-4" alt="Shoes">
+        <div class="card-body text-center">
+          <p class="fw-semibold">Shoes</p>
+        </div>
+      </div>
+    </a>
+
+    <a href="{% url 'category' 'PR' %}" class="text-decoration-none">
+      <div class="card product-card border-0 shadow-lg rounded-4">
+        <img src="{% static 'app/image/product/perfume.jpg' %}" class="card-img-top rounded-top-4" alt="Perfume">
+        <div class="card-body text-center">
+          <p class="fw-semibold">Perfume</p>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+
+
+<!-- ================= EXTRA CSS ================= -->
+<style>
+.banner-img {
+  max-height: 480px;
+  object-fit: cover;
+}
+.carousel-caption {
+  background: rgba(0,0,0,0.4);
+  padding: 1rem 2rem;
+  border-radius: .75rem;
+}
+.text-shadow {
+  text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+}
+.gradient-text {
+  background: linear-gradient(90deg, #ff512f, #dd2476);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hover-card {
+  transition: transform .3s, box-shadow .3s;
+}
+.hover-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+.product-card {
+  transition: transform .3s, box-shadow .3s;
+}
+.product-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+}
+</style>
+
+{% endblock main-content %}

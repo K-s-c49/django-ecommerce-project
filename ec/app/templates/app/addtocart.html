@@ -1,0 +1,120 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}Add-To-Cart{% endblock title %}
+
+{% block main-content %}
+<div class="container py-5">
+  {% if cart %}
+    <!-- Page Title -->
+    <h1 class="h3 fw-bold mb-4 d-flex align-items-center">
+      <i class="bi bi-cart-check text-primary me-2"></i> Shopping Cart
+    </h1>
+
+    <div class="row g-4">
+      
+      <!-- Left Section: Cart Items -->
+      <div class="col-lg-8">
+        {% for item in cart %}
+        <div class="card border-0 shadow-sm mb-4 hover-card">
+          <div class="row g-0 align-items-center">
+            
+            <!-- Product Image -->
+            <div class="col-md-3 text-center p-3">
+              <img src="{{ item.product.product_image.url }}" 
+                   alt="{{ item.product.title }}" 
+                   class="img-fluid rounded border">
+            </div>
+            
+            <!-- Product Details -->
+            <div class="col-md-9">
+              <div class="card-body">
+                <h5 class="card-title fw-semibold mb-1">
+                  <i class="bi bi-box-seam text-secondary me-1"></i> {{ item.product.title }}
+                </h5>
+                <p class="text-muted small mb-3">{{ item.product.description|truncatewords:18 }}</p>
+
+                <!-- Quantity Controls -->
+                <div class="d-flex align-items-center mb-3">
+                  <span class="me-2 fw-semibold">Qty:</span>
+                  <a class="minus-cart btn btn-sm btn-outline-secondary me-2" pid="{{ item.product.id }}">
+                    <i class="bi bi-dash"></i>
+                  </a>
+                  <span class="fw-semibold">{{ item.quantity }}</span>
+                  <a class="plus-cart btn btn-sm btn-outline-secondary ms-2" pid="{{ item.product.id }}">
+                    <i class="bi bi-plus"></i>
+                  </a>
+                </div>
+
+                <!-- Actions & Price -->
+                <div class="d-flex justify-content-between align-items-center">
+                  <a href="#" class="remove-cart btn btn-sm btn-outline-danger d-flex align-items-center" pid="{{ item.product.id }}">
+                    <i class="bi bi-trash me-1"></i> Remove
+                  </a>
+                  <p class="mb-0 fw-bold text-success fs-6">
+                    <i class="bi bi-currency-rupee"></i>{{ item.total_cost }}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Right Section: Cart Summary -->
+      <div class="col-lg-4">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <h3 class="h5 fw-bold mb-3 d-flex align-items-center">
+              <i class="bi bi-receipt text-success me-2"></i> Cart Summary
+            </h3>
+
+            <ul class="list-unstyled small mb-3">
+              <li class="d-flex justify-content-between py-1">
+                <span>Subtotal:</span> <span id="amount">₹{{ amount }}</span>
+              </li>
+              <li class="d-flex justify-content-between py-1">
+                <span>Shipping:</span> <span>₹40.00</span>
+              </li>
+            </ul>
+            <hr>
+            <div class="d-flex justify-content-between fw-bold fs-5">
+              <span>Total (incl. GST):</span>
+              <span id="totalamount">₹{{ totalamount }}</span>
+            </div>
+
+            <div class="d-grid mt-4">
+              <a href="{% url 'checkout' %}" class="btn btn-primary btn-lg shadow-sm">
+                <i class="bi bi-credit-card me-2"></i> Place Order
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <i class="bi bi-cart-x display-3 text-muted mb-3"></i>
+      <h1 class="h4 fw-bold text-muted">Your cart is empty</h1>
+      <a href="/" class="btn btn-outline-primary mt-3">
+        <i class="bi bi-shop me-2"></i> Continue Shopping
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Extra CSS -->
+<style>
+  .hover-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+</style>
+
+
+{% endblock main-content %}
