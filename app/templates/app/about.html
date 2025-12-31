@@ -1,0 +1,68 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}About{% endblock title %}
+
+{% block main-content %}
+<div class="container py-5">
+
+  <!-- Hero Section -->
+  <div class="text-center mb-5">
+    <h1 class="fw-bold text-primary">About Us</h1>
+    <p class="text-muted">We deliver quality products with care and dedication.</p>
+    <div class="d-inline-block">
+      <i class="bi bi-stars text-warning fs-1"></i>
+    </div>
+  </div>
+
+  <!-- About Section -->
+  <div class="row align-items-center g-5">
+    
+    <!-- Image -->
+    <div class="col-lg-6 text-center">
+      <img src="{% static 'app/image/product/logo.png' %}" alt="About Us"
+           class="img-fluid rounded shadow-sm p-3 bg-white">
+    </div>
+
+    <!-- Content -->
+    <div class="col-lg-6">
+      <h2 class="fw-semibold text-secondary mb-3">Who We Are</h2>
+      <p class="text-muted">
+        We are a team of professionals committed to providing high-quality products 
+        and excellent customer service. Our mission is to create value and build 
+        trust with every customer we serve.
+      </p>
+
+      <div class="row g-3">
+        <!-- Card 1 -->
+        <div class="col-sm-6">
+          <div class="p-4 bg-white border rounded text-center shadow-sm h-100">
+            <i class="bi bi-award fs-1 text-warning mb-2"></i>
+            <h6 class="fw-bold">Quality First</h6>
+            <p class="small text-muted mb-0">Every product goes through strict quality checks.</p>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="col-sm-6">
+          <div class="p-4 bg-white border rounded text-center shadow-sm h-100">
+            <i class="bi bi-heart-fill fs-1 text-danger mb-2"></i>
+            <h6 class="fw-bold">Customer Focused</h6>
+            <p class="small text-muted mb-0">We build relationships that last longer than sales.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Call to Action -->
+  <div class="text-center mt-5">
+    <h4 class="fw-bold text-dark">Want to connect with us?</h4>
+    <p class="text-muted">We’d love to hear from you.</p>
+    <a href="/contact" class="btn btn-outline-primary btn-lg shadow-sm">
+      <i class="bi bi-envelope-paper-heart me-2"></i> Contact Us
+    </a>
+  </div>
+
+</div>
+
+{% endblock main-content %}
+

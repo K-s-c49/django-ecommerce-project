@@ -1,0 +1,113 @@
+.logo-hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.logo-hover:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0.5rem 1rem rgba(91, 67, 185, 0.842);
+}
+
+/* Smaller height for carousel images */
+.banner-img {
+    height: 400px; /* Adjust height */
+    object-fit: cover; /* Keeps aspect ratio & fills area */
+}
+
+/* Adjust for mobile */
+@media (max-width: 768px) {
+    .banner-img {
+        height: 250px; /* Smaller height for mobile */
+    }
+}
+
+/* Smooth hover effect for info cards */
+.info-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.info-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+.product-card {
+    width: 18rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  .card-img-top {
+    height: 220px; /* Same height for all images */
+    object-fit: contain; /* Show full image */
+    background-color: #f8f9fa; /* Light background for padding space */
+    padding: 10px;
+  }
+     /* Card Hover Effects */
+    .product-card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-radius: 10px;
+        overflow: hidden;
+        background: linear-gradient(145deg, #ffffff, #f8f9fa);
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    /* Image Styling */
+    .product-card img {
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+    .product-card:hover img {
+        transform: scale(1.05);
+    }
+
+    /* Price Styling */
+    .price {
+        font-size: 1.1rem;
+        color: #dc3545;
+        font-weight: 700;
+    }
+    .old-price {
+        font-size: 0.9rem;
+        text-decoration: line-through;
+        color: #6c757d;
+    }
+
+    /* Category Sidebar */
+    .list-group-item {
+        font-weight: 500;
+        border: none;
+        transition: background-color 0.3s ease;
+    }
+    .list-group-item:hover {
+        background-color: #f1f1f1;
+    }
+.footer {
+  background: linear-gradient(135deg, #0d6efd, #6610f2);
+}
+
+.footer .footer-link {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+.footer .footer-link:hover {
+  color: #ffc107;
+}
+
+.footer .social-icon {
+  display: inline-block;
+  font-size: 1.2rem;
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+.footer .social-icon:hover {
+  color: #fff;
+  background: #ffc107;
+  transform: translateY(-3px);
+}

@@ -1,0 +1,77 @@
+{% extends "app/base.html" %}
+{% load static %}
+{% block title %}Category{% endblock title %}
+{% block main-content %}
+<div class="container py-4">
+  <div class="row">
+    
+    <!-- Sidebar Categories -->
+    <div class="col-12 col-lg-3 mb-4">
+      <div class="list-group shadow-sm rounded">
+        <div class="list-group-item fw-bold bg-light">
+          <i class="bi bi-list-check me-2 text-primary"></i> Categories
+        </div>
+        {% for val in title %}
+          <a href="{% url 'category-title' val.title %}" 
+             class="list-group-item list-group-item-action">
+            <i class="bi bi-tag me-2 text-secondary"></i>{{ val.title }}
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="col-12 col-lg-9">
+      <div class="row g-3 g-md-4">
+        {% for prod in product %}
+          <div class="col-6 col-md-4 col-lg-3">
+            <div class="card h-100 text-center border-0 shadow-sm hover-shadow transition">
+              <a href="{% url 'product-details' prod.id %}" 
+                 class="text-decoration-none text-dark">
+                 
+                <!-- Product Image -->
+                <img src="{{ prod.product_image.url }}" 
+                     class="card-img-top img-fluid bg-white p-2 rounded-top"
+                     alt="{{ prod.title }}" 
+                     style="height: 220px; object-fit: contain;">
+                
+                <!-- Card Body -->
+                <div class="card-body p-2">
+                  <div class="fw-bold small text-truncate mb-1">
+                    {{ prod.title }}
+                  </div>
+                  <div>
+                    <span class="text-success fw-semibold">
+                      <i class="bi bi-currency-rupee"></i>{{ prod.discounted_price }}
+                    </span>
+                    <small class="text-muted ms-1">
+                      <del><i class="bi bi-currency-rupee"></i>{{ prod.selling_price }}</del>
+                    </small>
+                  </div>
+                </div>
+
+              </a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Extra CSS -->
+<style>
+  .hover-shadow {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-shadow:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+  }
+  .list-group-item i {
+    font-size: 0.9rem;
+  }
+</style>
+
+{% endblock main-content %}
