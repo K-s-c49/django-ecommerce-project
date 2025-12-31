@@ -298,7 +298,7 @@ def payment_done(request):
             customer=customer,
             product=c.product,
             quantity=c.quantity,
-            payment=payment,
+            payment=payment
         )
         c.delete()
 
