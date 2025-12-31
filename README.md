@@ -1,3 +1,5 @@
+live demo https://khushalsingh.pythonanywhere.com/
+
 🛒 Django E-Commerce Project
 
 A complete E-commerce web application built with Django, designed to provide a smooth shopping experience.
