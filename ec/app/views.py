@@ -16,7 +16,6 @@ from django.utils.decorators import method_decorator #class
 
 
 # Create your views here.
-@login_required
 def home(request):
     totalitem = 0
     wishlist = 0
@@ -25,7 +24,6 @@ def home(request):
         wishlist = len(Wishlist.objects.filter(user=request.user))
     return render(request, "app/home.html",locals())
 
-@login_required
 def about(request):
     totalitem = 0
     wishlist = 0
@@ -34,7 +32,6 @@ def about(request):
         wishlist = len(Wishlist.objects.filter(user=request.user))
     return render(request, "app/about.html",locals())
 
-@login_required
 def contact(request):
     totalitem = 0
     wishlist = 0
@@ -43,7 +40,6 @@ def contact(request):
         wishlist = len(Wishlist.objects.filter(user=request.user))
     return render(request, "app/contact.html",locals())
 
-@method_decorator(login_required,name="dispatch")
 class CategoryView(View):
     def get(self,request,val): 
         totalitem = 0
@@ -55,7 +51,6 @@ class CategoryView(View):
         title = Product.objects.filter(category=val).values('title').annotate(total=Count('title'))
         return render(request, "app/category.html",locals())
 
-@method_decorator(login_required,name="dispatch")
 class CategoryTitle(View):
     def get(self,request,val): 
         product = Product.objects.filter(title=val)
@@ -67,16 +62,16 @@ class CategoryTitle(View):
             wishlist = len(Wishlist.objects.filter(user=request.user))
         return render(request, "app/category.html",locals())    
 
-@method_decorator(login_required,name="dispatch")
 class ProductDetails(View):
     def get(self,request,pk):
         product = Product.objects.get(pk=pk)
-        wishlist = Wishlist.objects.filter(Q(product=product) & Q(user=request.user))
+        wishlist_item = None
         totalitem = 0
         wishlist = 0
         if request.user.is_authenticated:
             totalitem = len(Cart.objects.filter(user=request.user))
             wishlist = len(Wishlist.objects.filter(user=request.user))
+            wishlist_item = Wishlist.objects.filter(Q(product=product) & Q(user=request.user))
         return render(request, "app/productdetail.html",locals())
 
 
@@ -298,12 +293,13 @@ def payment_done(request):
             customer=customer,
             product=c.product,
             quantity=c.quantity,
-            payment=payment,
+            payment=payment
         )
         c.delete()
 
     return redirect("orders")
 
+@login_required
 def orders(request):
     totalitem = 0
     wishlist = 0
@@ -314,6 +310,7 @@ def orders(request):
     return render(request,"app/order.html",locals())
 
 
+@login_required
 def remove_cart(request):
     if request.method == "GET":
         prod_id = request.GET["prod_id"]
@@ -346,6 +343,7 @@ def show_wishlist(request):
 
 
 
+@login_required
 def add_wishlist(request):
     if request.method == "GET":
         prod_id = request.GET.get("prod_id")
@@ -358,6 +356,7 @@ def add_wishlist(request):
         return JsonResponse({"message": "Already in Wishlist"}, status=200)
 
 
+@login_required
 def remove_wishlist(request):
     if request.method == "GET":
         prod_id = request.GET.get("prod_id")
@@ -369,13 +368,12 @@ def remove_wishlist(request):
             return JsonResponse({"message": "Wishlist Removed Successfully"}, status=200)
         return JsonResponse({"message": "Item not found in Wishlist"}, status=404)
     
-@login_required  
 def search(request):
-    query = request.GET["search"]
+    query = request.GET.get("search", "")
     totalitem = 0
     wishlist = 0
     if request.user.is_authenticated:
         totalitem = len(Cart.objects.filter(user=request.user))
         wishlist = len(Wishlist.objects.filter(user=request.user))
-        products = Product.objects.filter(Q(title__icontains=query))
-        return render(request,"app/search.html",locals())
+    products = Product.objects.filter(Q(title__icontains=query))
+    return render(request,"app/search.html",locals())

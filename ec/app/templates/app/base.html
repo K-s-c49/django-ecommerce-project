@@ -54,6 +54,8 @@ footer { flex-shrink: 0; }
   background: linear-gradient(135deg, #2b5876, #4e4376);
   overflow: hidden;
 }
+.footer, .footer p, .footer i { color: #fff; }
+.footer p { opacity: 0.9; }
 .footer::before {
   content: "";
   position: absolute;
@@ -110,7 +112,6 @@ footer { flex-shrink: 0; }
     <!-- Menu -->
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto">
-        {% if request.user.is_authenticated %}
         <li class="nav-item"><a class="nav-link nav-hover" href="/">Home</a></li>
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle nav-hover" href="#" id="navbarDropdown" data-bs-toggle="dropdown">Products</a>
@@ -137,6 +138,7 @@ footer { flex-shrink: 0; }
 
       <!-- Profile & Cart -->
       <ul class="navbar-nav">
+        {% if request.user.is_authenticated %}
         <li class="nav-item dropdown">
           <a class="nav-link dropdown-toggle nav-hover" href="#" id="ProfileDropdown" data-bs-toggle="dropdown">{{request.user}}</a>
           <ul class="dropdown-menu dropdown-menu-end">
