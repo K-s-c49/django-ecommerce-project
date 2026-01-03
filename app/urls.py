@@ -14,7 +14,7 @@ urlpatterns = [
     path("product-details/<int:pk>", views.ProductDetails.as_view(),name="product-details"),
     path("profile/", views.ProfileView.as_view(),name="profile"),
     path("address/", views.address,name="address"),
-    path("updateddress/<int:pk>",views.UpdateAddress.as_view(), name="updateaddress"),
+    path("updateaddress/<int:pk>",views.UpdateAddress.as_view(), name="updateaddress"),
 
 
     path("add-to-cart/",views.add_to_cart,name="add-to-cart"),
