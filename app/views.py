@@ -58,26 +58,35 @@ class CategoryView(View):
 @method_decorator(login_required,name="dispatch")
 class CategoryTitle(View):
     def get(self,request,val): 
-        product = Product.objects.filter(title=val)
-        title = Product.objects.filter(category=product[0].category).values('title')
-        totalitem = 0
-        wishlist = 0
-        if request.user.is_authenticated:
-            totalitem = len(Cart.objects.filter(user=request.user))
-            wishlist = len(Wishlist.objects.filter(user=request.user))
-        return render(request, "app/category.html",locals())    
+        product = get_object_or_404(Product, title=val)
+        related_products = Product.objects.filter(category=product.category)
+        title = related_products.values('title')
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishlist = len(Wishlist.objects.filter(user=request.user))
+        return render(request, "app/category.html",{
+            "product": related_products,
+            "title": title,
+            "totalitem": totalitem,
+            "wishlist": wishlist,
+        })    
 
 @method_decorator(login_required,name="dispatch")
 class ProductDetails(View):
     def get(self,request,pk):
-        product = Product.objects.get(pk=pk)
-        wishlist = Wishlist.objects.filter(Q(product=product) & Q(user=request.user))
-        totalitem = 0
-        wishlist = 0
-        if request.user.is_authenticated:
-            totalitem = len(Cart.objects.filter(user=request.user))
-            wishlist = len(Wishlist.objects.filter(user=request.user))
-        return render(request, "app/productdetail.html",locals())
+        product = get_object_or_404(Product, pk=pk)
+        totalitem = len(Cart.objects.filter(user=request.user))
+        wishlist_count = len(Wishlist.objects.filter(user=request.user))
+        in_wishlist = Wishlist.objects.filter(product=product, user=request.user).exists()
+        return render(
+            request,
+            "app/productdetail.html",
+            {
+                "product": product,
+                "totalitem": totalitem,
+                "wishlist": wishlist_count,
+                "in_wishlist": in_wishlist,
+            },
+        )
 
 
 class CustomerRegistrationView(View):
@@ -130,11 +139,8 @@ class ProfileView(View):
 @login_required    
 def address(request):
     add = Customer.objects.filter(user=request.user)
-    totalitem = 0
-    wishlist = 0
-    if request.user.is_authenticated:
-        totalitem = len(Cart.objects.filter(user=request.user))
-        wishlist = len(Wishlist.objects.filter(user=request.user))
+    totalitem = len(Cart.objects.filter(user=request.user))
+    wishlist = len(Wishlist.objects.filter(user=request.user))
     return render(request, "app/address.html",locals())
 
 @method_decorator(login_required,name="dispatch")
@@ -173,8 +179,8 @@ class CustomLogoutView(auth_views.LogoutView):
 def add_to_cart(request):
     user = request.user
     product_id = request.GET.get("prod_id")
-    product = Product.objects.get(id=product_id)
-    Cart(user=user,product=product).save()
+    product = get_object_or_404(Product, id=product_id)
+    Cart.objects.get_or_create(user=user, product=product)
     return redirect("/cart")
 
 @login_required
@@ -184,34 +190,42 @@ def show_cart(request):
     amount = 0
     for p in cart:
         value = p.quantity * p.product.discounted_price
-        amount = amount + value
-        totalamount = amount + 40
-        totalitem = 0
-        wishlist = 0
-        if request.user.is_authenticated:
-            totalitem = len(Cart.objects.filter(user=request.user))
-            wishlist = len(Wishlist.objects.filter(user=request.user))
-    return render(request,"app/addtocart.html",locals())
+        amount += value
+    totalamount = amount + 40 if cart else 0
+    totalitem = len(Cart.objects.filter(user=request.user))
+    wishlist = len(Wishlist.objects.filter(user=request.user))
+    return render(
+        request,
+        "app/addtocart.html",
+        {
+            "cart": cart,
+            "amount": amount,
+            "totalamount": totalamount,
+            "totalitem": totalitem,
+            "wishlist": wishlist,
+        },
+    )
 
 @login_required
 def plus_cart(request):
     if request.method == "GET":
         prod_id = request.GET["prod_id"]
-        c= Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
-        c.quantity+=1
-        c.save()
-        user = request.user
-        cart = Cart.objects.filter(user=user)
-        amount = 0
-        for p in cart:
-            value = p.quantity * p.product.discounted_price
-            amount = amount + value
-        totalamount = amount + 40
-        #print(prod_id)
-        data={
-            "quantity":c.quantity,
+        try:
+            cart_item = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+            cart_item.quantity += 1
+            cart_item.save()
+        except Cart.DoesNotExist:
+            return JsonResponse({"error": "Item not in cart"}, status=404)
+
+        amount = sum(
+            item.quantity * item.product.discounted_price
+            for item in Cart.objects.filter(user=request.user)
+        )
+        totalamount = amount + 40 if amount else 0
+        data = {
+            "quantity": cart_item.quantity,
             "amount": amount,
-            "totalamount":totalamount
+            "totalamount": totalamount,
         }
         return JsonResponse(data)
 
@@ -219,57 +233,93 @@ def plus_cart(request):
 def minus_cart(request):
     if request.method == "GET":
         prod_id = request.GET["prod_id"]
-        c= Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
-        c.quantity-=1
-        c.save()
-        user = request.user
-        cart = Cart.objects.filter(user=user)
-        amount = 0
-        for p in cart:
-            value = p.quantity * p.product.discounted_price
-            amount = amount + value
-        totalamount = amount + 40
-        #print(prod_id)
-        data={
-            "quantity":c.quantity,
+        try:
+            cart_item = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+        except Cart.DoesNotExist:
+            return JsonResponse({"error": "Item not in cart"}, status=404)
+
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+            quantity_value = cart_item.quantity
+        else:
+            quantity_value = 0
+            cart_item.delete()
+
+        amount = sum(
+            item.quantity * item.product.discounted_price
+            for item in Cart.objects.filter(user=request.user)
+        )
+        totalamount = amount + 40 if amount else 0
+        data = {
+            "quantity": quantity_value,
             "amount": amount,
-            "totalamount":totalamount
+            "totalamount": totalamount,
         }
         return JsonResponse(data)
     
 @method_decorator(login_required,name="dispatch")    
 class checkout(View):
     def get(self,request):
-        totalitem = 0
-        wishlist = 0
-        if request.user.is_authenticated:
-            totalitem = len(Cart.objects.filter(user=request.user))
-            wishlist = len(Wishlist.objects.filter(user=request.user))
         user = request.user
+        totalitem = len(Cart.objects.filter(user=user))
+        wishlist = len(Wishlist.objects.filter(user=user))
         add = Customer.objects.filter(user=user)
         cart_items = Cart.objects.filter(user=user)
-        famount = 0
-        for p in cart_items:
-            value = p.quantity * p.product.discounted_price
-            famount = famount + value
-        totalamount = famount + 40
-        razoramount = int(totalamount * 100)
-        client = razorpay.Client(auth=(settings.RAZOR_KEY_ID,settings.RAZOR_KEY_SECRET ))
-        data = {"amount":razoramount,"currency":"INR","receipt":"order_rcptid_12"}
-        payment_response = client.order.create(data=data)
-        print(payment_response)
-        #{'amount': 5993900, 'amount_due': 5993900, 'amount_paid': 0, 'attempts': 0, 'created_at': 1755423011, 'currency': 'INR', 'entity': 'order', 'id': 'order_R6LvkVsEzqBWVN', 'notes': [], 'offer_id': None, 'receipt': 'order_rcptid_12', 'status': 'created'}
-        order_id = payment_response["id"]
-        order_status = payment_response["status"]
-        if order_status == "created":
-            payment = Payment(
-                user =  user,
-                amount = totalamount,
-                razorpay_order_id = order_id,
-                razorpay_payment_status = order_status
+
+        famount = sum(
+            item.quantity * item.product.discounted_price for item in cart_items
+        )
+        totalamount = famount + 40 if cart_items else 0
+
+        payment = None
+        order_id = None
+        razoramount = None
+        if settings.RAZOR_KEY_ID and settings.RAZOR_KEY_SECRET and cart_items:
+            try:
+                client = razorpay.Client(
+                    auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET)
+                )
+                data = {
+                    "amount": int(totalamount * 100),
+                    "currency": "INR",
+                    "receipt": "order_rcptid_12",
+                }
+                payment_response = client.order.create(data=data)
+                order_id = payment_response["id"]
+                razoramount = payment_response["amount"]
+                order_status = payment_response["status"]
+                if order_status == "created":
+                    payment = Payment.objects.create(
+                        user=user,
+                        amount=totalamount,
+                        razorpay_order_id=order_id,
+                        razorpay_payment_status=order_status,
+                    )
+            except Exception as exc:
+                messages.error(request, f"Unable to start payment: {exc}")
+        elif cart_items:
+            messages.warning(
+                request,
+                "Payment keys are missing. Add Razorpay keys to enable checkout.",
             )
-            payment.save()
-        return render(request,"app/checkout.html",locals())
+
+        return render(
+            request,
+            "app/checkout.html",
+            {
+                "add": add,
+                "cart_items": cart_items,
+                "totalamount": totalamount,
+                "famount": famount,
+                "totalitem": totalitem,
+                "wishlist": wishlist,
+                "payment": payment,
+                "order_id": order_id,
+                "razoramount": razoramount,
+                "razor_key_id": settings.RAZOR_KEY_ID,
+            },
+        )
 
 @csrf_exempt  # ✅ if this is called by Razorpay callback
 @login_required
@@ -278,55 +328,48 @@ def payment_done(request):
     payment_id = request.GET.get("payment_id")
     cust_id = request.GET.get("cust_id")
 
-    # Get the customer (your custom model)
-    customer = get_object_or_404(Customer, id=cust_id)
-
-    # Get the actual Django User related to the Customer
-    user = customer.user   # assuming Customer has OneToOneField(User)
-
-    # Update payment
-    payment = get_object_or_404(Payment, razorpay_order_id=order_id)
+    customer = get_object_or_404(Customer, id=cust_id, user=request.user)
+    payment = get_object_or_404(Payment, razorpay_order_id=order_id, user=request.user)
     payment.paid = True
     payment.razorpay_payment_id = payment_id
     payment.save()
 
-    # Move items from Cart to OrderPlaced
-    cart_items = Cart.objects.filter(user=user)
-    for c in cart_items:
+    cart_items = Cart.objects.filter(user=request.user)
+    for cart_item in cart_items:
         OrderPlaced.objects.create(
-            user=user,
+            user=request.user,
             customer=customer,
-            product=c.product,
-            quantity=c.quantity,
-            payment=payment
+            product=cart_item.product,
+            quantity=cart_item.quantity,
+            payment=payment,
         )
-        c.delete()
+        cart_item.delete()
 
     return redirect("orders")
 
+@login_required
 def orders(request):
-    totalitem = 0
-    wishlist = 0
-    if request.user.is_authenticated:
-        totalitem = len(Cart.objects.filter(user=request.user))
-        wishlist = len(Wishlist.objects.filter(user=request.user))
-    order_Placed = OrderPlaced.objects.filter(user= request.user)
+    totalitem = len(Cart.objects.filter(user=request.user))
+    wishlist = len(Wishlist.objects.filter(user=request.user))
+    order_Placed = OrderPlaced.objects.filter(user=request.user)
     return render(request,"app/order.html",locals())
 
 
+@login_required
 def remove_cart(request):
     if request.method == "GET":
         prod_id = request.GET["prod_id"]
-        c= Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
-        c.delete()
-        user = request.user
-        cart = Cart.objects.filter(user=user)
-        amount = 0
-        for p in cart:
-            value = p.quantity * p.product.discounted_price
-            amount = amount + value
-        totalamount = amount + 40
-        #print(prod_id)
+        try:
+            cart_item = Cart.objects.get(Q(product=prod_id) & Q(user=request.user))
+            cart_item.delete()
+        except Cart.DoesNotExist:
+            return JsonResponse({"error": "Item not in cart"}, status=404)
+
+        amount = sum(
+            item.quantity * item.product.discounted_price
+            for item in Cart.objects.filter(user=request.user)
+        )
+        totalamount = amount + 40 if amount else 0
         data={
             "amount": amount,
             "totalamount":totalamount
@@ -346,6 +389,7 @@ def show_wishlist(request):
 
 
 
+@login_required
 def add_wishlist(request):
     if request.method == "GET":
         prod_id = request.GET.get("prod_id")
@@ -358,6 +402,7 @@ def add_wishlist(request):
         return JsonResponse({"message": "Already in Wishlist"}, status=200)
 
 
+@login_required
 def remove_wishlist(request):
     if request.method == "GET":
         prod_id = request.GET.get("prod_id")

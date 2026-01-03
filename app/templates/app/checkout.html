@@ -113,35 +113,38 @@
 {% endblock main-content %}
 
  {% block payment-gateway %}
- <script>
-var options = {
-    "key": "rzp_test_R6La9y2xpkqPEB", // Enter the Key ID generated from the Dashboard
-    "amount": "{{razoramount}}", // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    "currency": "INR",
-    "name": "K&K products",
-    "description": "Test Transaction",
-    "image": "https://example.com/your_logo",
-    "order_id": "{{order_id}}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
-    "handler": function (response){
-        console.log("success")
-        var form = document.getElementById("myform");
-        //alert(response.razorpay_payment_id);
-        //alert(response.razorpay_order_id);
-        //alert(response.razorpay_signature)
-      window.location.href = `http://localhost:8000/paymentdone?order_id=${response.razorpay_order_id}&payment_id=${response.razorpay_payment_id}&cust_id=${form.elements["custid"].value}`
+<script>
+{% if order_id and razor_key_id %}
+  const options = {
+    key: "{{ razor_key_id }}",
+    amount: "{{ razoramount|default:0 }}",
+    currency: "INR",
+    name: "K&K products",
+    description: "Order payment",
+    order_id: "{{ order_id }}",
+    handler: function (response) {
+      const form = document.getElementById("myform");
+      const address = form.elements["custid"].value;
+      const baseUrl = window.location.origin;
+      window.location.href = `${baseUrl}/paymentdone?order_id=${response.razorpay_order_id}&payment_id=${response.razorpay_payment_id}&cust_id=${address}`;
     },
-    "theme": {
-        "color": "#3399cc"
-    }
-};
-var rzp1 = new Razorpay(options);
-rzp1.on('payment.failed', function (response){
-        alert(response.error.description);
-});
-document.getElementById('rzp-button1').onclick = function(e){
-    console.log("button click")
+    theme: { color: "#3399cc" },
+  };
+
+  const rzp1 = new Razorpay(options);
+  rzp1.on("payment.failed", function (response) {
+    alert(response.error.description);
+  });
+
+  document.getElementById("rzp-button1").onclick = function (e) {
     rzp1.open();
     e.preventDefault();
-}
- </script>
+  };
+{% else %}
+  document.getElementById("rzp-button1").onclick = function (e) {
+    e.preventDefault();
+    alert("Payment is unavailable. Please add Razorpay keys or try again later.");
+  };
+{% endif %}
+</script>
  {% endblock payment-gateway %}
