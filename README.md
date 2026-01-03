@@ -91,3 +91,17 @@ Open your settings.py file and add the keys:
 In your checkout or payment view, use these keys to integrate Razorpay’s order API.
 Make sure to use test mode keys while developing, and live keys when deploying.
 etc..
+
+## 🚀 Deployment
+
+This project includes automatic deployment to PythonAnywhere using GitHub Actions.
+
+For detailed deployment instructions, see **[DEPLOYMENT.md](DEPLOYMENT.md)**
+
+### Quick Deployment Overview
+
+1. **Setup PythonAnywhere**: Create account and configure web app
+2. **Configure GitHub Secrets**: Add required secrets for automatic deployment
+3. **Push to master**: Changes pushed to master branch automatically deploy
+
+See the [DEPLOYMENT.md](DEPLOYMENT.md) file for complete step-by-step instructions, troubleshooting, and configuration details.

@@ -1,0 +1,55 @@
+name: Deploy to PythonAnywhere
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    name: Deploy to PythonAnywhere
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Deploy to PythonAnywhere via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          PYTHONANYWHERE_API_TOKEN: ${{ secrets.PYTHONANYWHERE_API_TOKEN }}
+          PYTHONANYWHERE_USERNAME: ${{ secrets.PYTHONANYWHERE_USERNAME }}
+          PYTHONANYWHERE_PROJECT_DIR: ${{ secrets.PYTHONANYWHERE_PROJECT_DIR }}
+          PYTHONANYWHERE_VENV_DIR: ${{ secrets.PYTHONANYWHERE_VENV_DIR }}
+          PYTHONANYWHERE_WEBAPP_NAME: ${{ secrets.PYTHONANYWHERE_WEBAPP_NAME }}
+        with:
+          host: ssh.pythonanywhere.com
+          username: ${{ secrets.PYTHONANYWHERE_USERNAME }}
+          password: ${{ secrets.PYTHONANYWHERE_PASSWORD }}
+          envs: PYTHONANYWHERE_API_TOKEN,PYTHONANYWHERE_USERNAME,PYTHONANYWHERE_PROJECT_DIR,PYTHONANYWHERE_VENV_DIR,PYTHONANYWHERE_WEBAPP_NAME
+          script: |
+            export PYTHONANYWHERE_API_TOKEN="${PYTHONANYWHERE_API_TOKEN}"
+            export PYTHONANYWHERE_USERNAME="${PYTHONANYWHERE_USERNAME}"
+            export PYTHONANYWHERE_PROJECT_DIR="${PYTHONANYWHERE_PROJECT_DIR}"
+            export PYTHONANYWHERE_VENV_DIR="${PYTHONANYWHERE_VENV_DIR}"
+            export PYTHONANYWHERE_WEBAPP_NAME="${PYTHONANYWHERE_WEBAPP_NAME}"
+            
+            # Navigate to project directory and run deployment script
+            cd "${PYTHONANYWHERE_PROJECT_DIR}"
+            chmod +x deploy_to_pythonanywhere.sh
+            bash deploy_to_pythonanywhere.sh
+            
+      - name: Deployment Status
+        if: success()
+        run: |
+          echo "✅ Deployment to PythonAnywhere completed successfully!"
+          
+      - name: Deployment Failed
+        if: failure()
+        run: |
+          echo "❌ Deployment to PythonAnywhere failed!"
+          echo "Please check the logs above for details."
+          exit 1
