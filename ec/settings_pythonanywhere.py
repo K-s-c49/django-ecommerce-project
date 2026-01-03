@@ -4,8 +4,9 @@ This file contains production-specific settings for deployment on PythonAnywhere
 Import this in your main settings.py or set DJANGO_SETTINGS_MODULE to this file.
 """
 
-from ec.settings import *
 import os
+import dj_database_url
+from ec.settings import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
@@ -48,7 +49,7 @@ X_FRAME_OPTIONS = 'DENY'
 # Static files configuration for PythonAnywhere
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [BASE_DIR / 'app' / 'static']
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'app', 'static')]
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Media files configuration

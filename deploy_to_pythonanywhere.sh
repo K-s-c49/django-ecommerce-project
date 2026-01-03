@@ -23,6 +23,16 @@ cd "$PROJECT_DIR" || { echo "Error: Project directory not found"; exit 1; }
 # Pull latest code from master branch
 echo ">>> Pulling latest code from GitHub..."
 git fetch origin
+
+# Check if there are local changes
+if ! git diff-index --quiet HEAD --; then
+    echo "⚠ Warning: Local changes detected. Creating backup..."
+    BACKUP_BRANCH="backup-$(date +%Y%m%d-%H%M%S)"
+    git branch "$BACKUP_BRANCH"
+    echo "✓ Backup branch created: $BACKUP_BRANCH"
+fi
+
+# Reset to origin/master
 git reset --hard origin/master
 echo "✓ Code updated successfully"
 
